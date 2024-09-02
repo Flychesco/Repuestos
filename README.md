@@ -1,5 +1,6 @@
-Este programa hace lo siguiente:
+Programa gráfico en Python que interactúa con un archivo Excel para mostrar y modificar datos. Ha sido realizado utilizando la biblioteca tkinter para la interfaz gráfica y openpyxl para manejar archivos Excel. Este programa te permitirá ingresar una referencia, ver los datos asociados a esa referencia y modificarlos.
 
+Este programa hace lo siguiente:
 1. Crea una interfaz gráfica con tkinter.
 2. Utiliza openpyxl para manejar el archivo Excel.
 3. Permite ingresar una referencia y buscar los datos asociados.
