@@ -16,8 +16,11 @@ class ExcelGUI:
         self.ref_frame.pack(pady=10)
 
         tk.Label(self.ref_frame, text="Ref.Componente").grid(row=0, column=0)
-        self.ref_entry = tk.Entry(self.ref_frame)
+        # Validación para la entrada de referencia
+        validate_command = (self.master.register(self.validate_reference), '%P')
+        self.ref_entry = tk.Entry(self.ref_frame, validate='key', validatecommand=validate_command)
         self.ref_entry.grid(row=0, column=1)
+        #Hasta aquí la validación modificada
         tk.Button(self.ref_frame, text="Buscar", command=self.buscar_datos).grid(row=0, column=2)
 
         # Frame para mostrar y modificar datos
@@ -49,11 +52,23 @@ class ExcelGUI:
         except Exception as e:
             messagebox.showerror("Error", f"No se pudo crear o abrir el archivo Excel: {e}")
 
+    #Valida que la referencia sea un número de exactamente 5 dígitos
+    def validate_reference(self, value_if_allowed):
+        if value_if_allowed.isdigit() and len(value_if_allowed) <= 5:
+            return True
+        elif value_if_allowed == "":
+            return True  # Permite borrar todo el contenido
+        else:
+            self.ref_entry.delete(0, tk.END)
+            messagebox.showerror("Error de entrada", "La referencia debe ser un número de 5 dígitos.")
+            return False
+
+
     #Busca los datos de la referencia
     def buscar_datos(self):
         referencia = self.ref_entry.get().strip()
-        if not referencia:
-            messagebox.showerror("Error", "Por favor, introduce una referencia válida.")
+        if not referencia or len(referencia) != 5:
+            messagebox.showerror("Error", "Por favor, introduce una referencia válida de 6 dígitos.")
             return
 
         try:
@@ -72,13 +87,13 @@ class ExcelGUI:
         except Exception as e:
             messagebox.showerror("Error", f"No se pudo buscar en el archivo Excel: {e}")
 
-
+    
     def guardar_cambios(self):
         referencia = self.ref_entry.get().strip()
-        if not referencia:
-            messagebox.showerror("Error", "Mira ver que has liao y vuelve a intentarlo")
+        if not referencia or len(referencia) != 5:
+            messagebox.showerror("Error", "Por favor, introduce una referencia válida de 6 dígitos.")
             return
-
+        
         datos = [entry.get().strip() for entry in self.entries]
 
         try: 
@@ -86,7 +101,7 @@ class ExcelGUI:
             ws = wb.active
 
             row_to_update = None
-            for row in ws.iter_rows(min_row=2):
+            for row in ws.iter_rows(min_row=2, max_row=ws.max_row):
                 if row[0].value == referencia:
                     row_to_update = row
                     break
