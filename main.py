@@ -32,7 +32,11 @@ class ExcelGUI:
 
         for i, label in enumerate(self.labels):
             tk.Label(self.data_frame, text=label).grid(row=i, column=0)
-            entry = tk.Entry(self.data_frame)
+            if label == "Varios":
+                entry = tk.Entry(self.data_frame)  # "Varios" acepta texto
+            else:
+                validate_command_numeric = (self.master.register(self.validate_numeric), '%P')
+                entry = tk.Entry(self.data_frame, validate='key', validatecommand=validate_command_numeric)
             entry.grid(row=i, column=1)
             self.entries.append(entry)
 
@@ -63,6 +67,20 @@ class ExcelGUI:
             messagebox.showerror("Error de entrada", "La referencia debe ser un número de 5 dígitos.")
             return False
 
+    # Valida que el campo sea solo numérico
+    def validate_numeric(self, value_if_allowed):
+        if value_if_allowed.isdigit() or value_if_allowed == "":
+            return True
+        else:
+            messagebox.showerror("Error de entrada", "Este campo solo acepta valores numéricos.")
+            return False
+
+    # Función para limpiar todos los campos de entrada
+    def limpiar_entradas(self, limpiar_referencia=True):
+        if limpiar_referencia:
+            self.ref_entry.delete(0, tk.END)
+        for entry in self.entries:
+            entry.delete(0, tk.END)
 
     #Busca los datos de la referencia
     def buscar_datos(self):
@@ -84,10 +102,11 @@ class ExcelGUI:
                     return
             #Añado nuevas excepciones
             messagebox.showinfo("Nueva Referencia", "No hay Repuestos de esta referencia, Introduce datos para añadir repuestos.")
+            self.limpiar_entradas(limpiar_referencia=False)  # Limpiar solo los campos de datos, no la referencia
         except Exception as e:
             messagebox.showerror("Error", f"No se pudo buscar en el archivo Excel: {e}")
 
-    
+    # Guarda los cambios realizados en la referencia actual
     def guardar_cambios(self):
         referencia = self.ref_entry.get().strip()
         if not referencia or len(referencia) != 5:
@@ -114,6 +133,7 @@ class ExcelGUI:
 
             wb.save(self.excel_file)
             messagebox.showinfo("Involucro", "Datos guardados, a currar")
+            self.limpiar_entradas(limpiar_referencia=False)  # Limpiar solo los campos de datos, no la referencia
         #Añado otra excepción al guardado de datos
         except Exception as e:
             messagebox.showerror("Error", f"No se pudo guardar en el archivo Excel: {e}")
