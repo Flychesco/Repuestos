@@ -36,6 +36,7 @@ class ExcelGUI:
         # Botón para guardar cambios
         tk.Button(self.master, text="Guardar", command=self.guardar_cambios).pack(pady=10)
 
+    #Crea el archivo excel si no existe
     def create_excel_if_not_exists(self):
         try:
             load_workbook(self.excel_file)
@@ -44,50 +45,64 @@ class ExcelGUI:
             ws = wb.active
             ws.append(["Frontal", "Lateral Der.", "Lateral Izq.", "Power/Reset", "Leds frontales", "Varios", "Protecciones"])
             wb.save(self.excel_file)
+        #Añado error si no se puede crear
+        except Exception as e:
+            messagebox.showerror("Error", f"No se pudo crear o abrir el archivo Excel: {e}")
 
+    #Busca los datos de la referencia
     def buscar_datos(self):
-        referencia = self.ref_entry.get()
+        referencia = self.ref_entry.get().strip()
         if not referencia:
-            messagebox.showerror("Error", "Mira ver que has liao y vuelve a intentarlo")
+            messagebox.showerror("Error", "Por favor, introduce una referencia válida.")
             return
 
-        wb = load_workbook(self.excel_file)
-        ws = wb.active
+        try:
+            wb = load_workbook(self.excel_file)
+            ws = wb.active
 
-        for row in ws.iter_rows(min_row=2, values_only=True):
-            if row[0] == referencia:
-                for entry, value in zip(self.entries, row[1:]):
-                    entry.delete(0, tk.END)
-                    entry.insert(0, str(value))
-                return
+        #Busca solo en columnas con informacion
+            for row in ws.iter_rows(min_row=2, max_row=ws.max_row, values_only=True):
+                if row[0] == referencia:
+                    for entry, value in zip(self.entries, row[1:]):
+                        entry.delete(0, tk.END)
+                        entry.insert(0, str(value) if value is not None else "")
+                    return
+            #Añado nuevas excepciones
+            messagebox.showinfo("Nueva Referencia", "No hay Repuestos de esta referencia, Introduce datos para añadir repuestos.")
+        except Exception as e:
+            messagebox.showerror("Error", f"No se pudo buscar en el archivo Excel: {e}")
 
-        messagebox.showinfo("Nueva Referencia", "No hay Repuestos de esta referencia, Introduce datos para añadir repuestos.")
 
     def guardar_cambios(self):
-        referencia = self.ref_entry.get()
+        referencia = self.ref_entry.get().strip()
         if not referencia:
             messagebox.showerror("Error", "Mira ver que has liao y vuelve a intentarlo")
             return
 
-        datos = [entry.get() for entry in self.entries]
+        datos = [entry.get().strip() for entry in self.entries]
 
-        wb = load_workbook(self.excel_file)
-        ws = wb.active
+        try: 
+            wb = load_workbook(self.excel_file)
+            ws = wb.active
 
-        row_to_update = None
-        for row in ws.iter_rows(min_row=2):
-            if row[0].value == referencia:
-                row_to_update = row
-                break
+            row_to_update = None
+            for row in ws.iter_rows(min_row=2):
+                if row[0].value == referencia:
+                    row_to_update = row
+                    break
 
-        if row_to_update:
-            for cell, value in zip(row_to_update[1:], datos):
-                cell.value = value
-        else:
-            ws.append([referencia] + datos)
+            if row_to_update:
+                for cell, value in zip(row_to_update[1:], datos):
+                    cell.value = value
+            else:
+                ws.append([referencia] + datos)
 
-        wb.save(self.excel_file)
-        messagebox.showinfo("Involucro", "Datos guardados, a currar")
+            wb.save(self.excel_file)
+            messagebox.showinfo("Involucro", "Datos guardados, a currar")
+        #Añado otra excepción al guardado de datos
+        except Exception as e:
+            messagebox.showerror("Error", f"No se pudo guardar en el archivo Excel: {e}")
+     
 
 if __name__ == "__main__":
     root = tk.Tk()
