@@ -15,5 +15,6 @@ Este programa hace lo siguiente:
 
 Este es un programa que puede requerir ajustes según tus necesidades específicas, como manejar más campos, validar entradas, o mejorar el diseño de la interfaz. Muy facil de manejar y cambiar datos a necesidad de cada usuario.
 
+https://github.com/jesusremis/Repuestos/blob/main/CapturaRepuestos.PNG
    
    Para mas informacion contacten con creador.
