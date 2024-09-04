@@ -44,7 +44,9 @@ class ExcelGUI:
             self.entries.append(entry)
 
         # Botón para guardar cambios
-        tk.Button(self.master, text="Guardar", command=self.guardar_cambios).pack(pady=10)
+        # Botón para guardar cambios
+        self.guardar_button = tk.Button(self.master, text="Guardar", command=self.guardar_cambios, state='disabled')
+        self.guardar_button.pack(pady=10)
 
     def verificar_modificacion(self, event):
         #Evita que se escriba en el campo sin buscar primero.
@@ -104,12 +106,14 @@ class ExcelGUI:
                         entry.config(state='normal')  # Habilitar entradas al buscar
                         entry.delete(0, tk.END)
                         entry.insert(0, str(value) if value is not None else "")
+                    self.guardar_button.config(state='normal')
                     return
 
             messagebox.showinfo("Nueva Referencia", "No hay repuestos de esta referencia, introduce lo que quieras añadir.")
             self.limpiar_entradas(limpiar_referencia=False)
             for entry in self.entries:
                 entry.config(state='normal')
+            self.guardar_button.config(state='normal')  # Activa el botón de guardar
 
         except Exception as e:
             messagebox.showerror("Error", f"No se pudo buscar en el archivo Excel: {e}")
@@ -144,6 +148,7 @@ class ExcelGUI:
             self.limpiar_entradas(limpiar_referencia=False)
             for entry in self.entries:
                 entry.config(state='disabled')  # Desactivar campos después de guardar
+            self.guardar_button.config(state='disabled')  # Desactiva el botón de guardar
 
         except Exception as e:
             messagebox.showerror("Error", f"No se pudo guardar en el archivo Excel: {e}")
