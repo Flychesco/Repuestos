@@ -1,12 +1,20 @@
 import tkinter as tk
 from tkinter import messagebox
 from openpyxl import load_workbook, Workbook
+import os
 
 class ExcelGUI:
     def __init__(self, master):
         self.master = master
         self.master.title("Involucro 2000")
-        self.master.geometry("350x275")
+        self.master.geometry("300x275")
+
+        # Añadir el ícono a la ventana
+        icon_path = os.path.join(os.path.dirname(__file__), "involucro.ico")
+        if os.path.exists(icon_path):
+            self.master.iconbitmap(icon_path)
+        else:
+            print("Falta el Icono:", icon_path)
 
         self.excel_file = "Repuestos2024.xlsx"
         self.create_excel_if_not_exists()
