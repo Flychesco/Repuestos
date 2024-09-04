@@ -20,6 +20,8 @@ class ExcelGUI:
         validate_command = (self.master.register(self.validate_reference), '%P')
         self.ref_entry = tk.Entry(self.ref_frame, validate='key', validatecommand=validate_command)
         self.ref_entry.grid(row=0, column=1)
+        #Ahora pulsando ENTER para buscar
+        self.ref_entry.bind("<Return>", lambda event: self.buscar_datos())
         #Hasta aquí la validación modificada
         tk.Button(self.ref_frame, text="Buscar", command=self.buscar_datos).grid(row=0, column=2)
 
