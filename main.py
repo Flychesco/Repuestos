@@ -86,7 +86,7 @@ class ExcelGUI:
     def buscar_datos(self):
         referencia = self.ref_entry.get().strip()
         if not referencia or len(referencia) != 5:
-            messagebox.showerror("Error", "Por favor, introduce una referencia válida de 6 dígitos.")
+            messagebox.showerror("Error", "Por favor, introduce una referencia válida de 5 dígitos.")
             return
 
         try:
@@ -110,7 +110,7 @@ class ExcelGUI:
     def guardar_cambios(self):
         referencia = self.ref_entry.get().strip()
         if not referencia or len(referencia) != 5:
-            messagebox.showerror("Error", "Por favor, introduce una referencia válida de 6 dígitos.")
+            messagebox.showerror("Error", "Por favor, introduce una referencia válida de 5 dígitos.")
             return
         
         datos = [entry.get().strip() for entry in self.entries]
