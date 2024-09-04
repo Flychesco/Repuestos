@@ -5,8 +5,8 @@ from openpyxl import load_workbook, Workbook
 class ExcelGUI:
     def __init__(self, master):
         self.master = master
-        self.master.title("Repuestoturbo1000 (hay que buscar un buen nombre)")
-        self.master.geometry("500x400")
+        self.master.title("Involucro 2000")
+        self.master.geometry("350x275")
 
         self.excel_file = "Repuestos2024.xlsx"
         self.create_excel_if_not_exists()
