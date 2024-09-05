@@ -51,16 +51,27 @@ class ExcelGUI:
             entry.bind("<Key>", self.verificar_modificacion)
             self.entries.append(entry)
 
-        # Botón para guardar cambios
+        
         # Botón para guardar cambios
         self.guardar_button = tk.Button(self.master, text="Guardar", command=self.guardar_cambios, state='disabled')
         self.guardar_button.pack(pady=10)
+
+        #Agrega un evento para detectar cambios en la entrada de referencia y bloquear el botón "Guardar"
+        self.ref_entry.bind("<KeyRelease>", self.on_ref_entry_change)
 
     def verificar_modificacion(self, event):
         #Evita que se escriba en el campo sin buscar primero.
         if event.widget['state'] == 'disabled':
             messagebox.showerror("BIEN PERO MAL", "Dale a buscar, paspán")
             return "break"
+
+    #Añade una nueva función para manejar el evento de modificación de la referencia
+    def on_ref_entry_change(self, event):
+        # Bloquea el botón de guardar cuando se cambia la referencia
+        self.guardar_button.config(state='disabled')
+        # Desactivar los campos de datos hasta que se realice la búsqueda
+        for entry in self.entries:
+            entry.config(state='disabled')
 
     def create_excel_if_not_exists(self):
         #Crea el archivo Excel si no existe.
